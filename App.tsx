@@ -1,117 +1,104 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, {useState} from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import PatternDivider from './assets/images/pattern-divider-mobile.svg';
+import DiceIcon from './assets/images/icon-dice.svg';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+interface SlipObject {
+  slipId: number;
+  advice: string;
+}
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const slipObject: SlipObject = {
+  slipId: 117,
+  advice:
+    'It is easy to sit up and take notice, what is not easy is getting up and taking action',
+};
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+interface FetchRandomAdviceButtonProps {
+  onPress: () => void;
+}
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+function FetchRandomAdviceButton({onPress}: FetchRandomAdviceButtonProps) {
+  const [isBeingPressed, setIsBeingPressed] = useState(false);
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View
+      style={
+        isBeingPressed
+          ? {...styles.diceIcon, ...styles.diceIconActive}
+          : {...styles.diceIcon}
+      }>
+      <Pressable
+        onPressIn={() => setIsBeingPressed(true)}
+        onPressOut={() => setIsBeingPressed(false)}
+        onPress={onPress}>
+        <DiceIcon />
+      </Pressable>
     </View>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function App() {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <View style={styles.container}>
+      <View style={styles.adviceContainer}>
+        <View style={{display: 'flex', alignItems: 'center'}}>
+          <Text style={styles.adviceHeader}>Advice #{slipObject.slipId}</Text>
+          <Text style={styles.advice}>"{slipObject.advice}"</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <PatternDivider style={{marginBottom: 50}} />
+        <FetchRandomAdviceButton
+          onPress={() => console.log('Fetch new advice')}
+        />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'hsl(218, 23%, 16%)',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  adviceContainer: {
+    backgroundColor: 'hsl(217, 19%, 24%)',
+    display: 'flex',
+    alignItems: 'center',
+    width: '90%',
+    padding: 20,
+    elevation: 10,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  adviceHeader: {
+    textTransform: 'uppercase',
+    color: 'hsl(150, 100%, 66%)',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 4,
+    marginTop: 30,
   },
-  highlight: {
-    fontWeight: '700',
+  advice: {
+    fontFamily: 'Manrope',
+    fontSize: 30,
+    color: 'white',
+    textAlign: 'center',
+    marginVertical: 30,
+    fontWeight: 'bold',
+  },
+  diceIcon: {
+    position: 'absolute',
+    left: '47.2%',
+    bottom: -30,
+    backgroundColor: 'hsl(150, 100%, 66%)',
+    padding: 20,
+    borderRadius: 50,
+  },
+  diceIconActive: {
+    elevation: 30,
+    backgroundColor: 'hsl(150, 100%, 80%)',
+    shadowColor: 'hsl(150, 100%, 66%)',
   },
 });
 
