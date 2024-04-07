@@ -1,17 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import PatternDivider from './assets/images/pattern-divider-mobile.svg';
 import DiceIcon from './assets/images/icon-dice.svg';
 
 interface SlipObject {
-  slipId: number;
+  id: number;
   advice: string;
 }
 
-const slipObject: SlipObject = {
-  slipId: 117,
-  advice:
-    'It is easy to sit up and take notice, what is not easy is getting up and taking action',
+type AdviceApiResponse = {
+  slip: SlipObject;
 };
 
 interface FetchRandomAdviceButtonProps {
@@ -39,16 +37,53 @@ function FetchRandomAdviceButton({onPress}: FetchRandomAdviceButtonProps) {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentAdvice, setCurrentAdvice] = useState<SlipObject | undefined>();
+
+  async function getAdvice() {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch('https://api.adviceslip.com/advice');
+      const data = (await response.json()) as AdviceApiResponse;
+      console.log(data);
+
+      setCurrentAdvice(data.slip);
+    } catch (error) {
+      console.log('Something went wrong!');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getAdvice();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.adviceContainer}>
-        <View style={{display: 'flex', alignItems: 'center'}}>
-          <Text style={styles.adviceHeader}>Advice #{slipObject.slipId}</Text>
-          <Text style={styles.advice}>"{slipObject.advice}"</Text>
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            opacity: isLoading ? 0.5 : 1,
+          }}>
+          {currentAdvice && (
+            <>
+              <Text style={styles.adviceHeader}>
+                Advice #{currentAdvice?.id}
+              </Text>
+              <Text style={styles.advice}>"{currentAdvice?.advice}"</Text>
+            </>
+          )}
         </View>
         <PatternDivider style={{marginBottom: 50}} />
         <FetchRandomAdviceButton
-          onPress={() => console.log('Fetch new advice')}
+          onPress={() => {
+            console.log('Pressed!');
+            getAdvice();
+          }}
         />
       </View>
     </View>
