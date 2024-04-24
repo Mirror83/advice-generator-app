@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import PatternDivider from './assets/images/pattern-divider-mobile.svg';
 import DiceIcon from './assets/images/icon-dice.svg';
 
@@ -38,19 +44,27 @@ function FetchRandomAdviceButton({onPress}: FetchRandomAdviceButtonProps) {
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [currentAdvice, setCurrentAdvice] = useState<SlipObject | undefined>();
 
   async function getAdvice() {
     try {
       setIsLoading(true);
+      setIsError(false);
 
-      const response = await fetch('https://api.adviceslip.com/advice');
-      const data = (await response.json()) as AdviceApiResponse;
-      console.log(data);
+      const headers = new Headers();
+      headers.append('pragma', 'no-cache');
+      headers.append('cache-control', 'no-cache');
+
+      const response = await fetch('https://api.adviceslip.com/advice', {
+        headers: headers,
+      });
+      const data = await response.json();
 
       setCurrentAdvice(data.slip);
     } catch (error) {
-      console.log('Something went wrong!');
+      console.log(error);
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -67,9 +81,21 @@ function App() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            opacity: isLoading ? 0.5 : 1,
+            opacity: currentAdvice && isLoading ? 0.5 : 1,
           }}>
-          {currentAdvice && (
+          {!currentAdvice && isLoading ? (
+            <View>
+              <Text style={styles.adviceHeader}>Loading...</Text>
+              <ActivityIndicator size={64} style={{marginVertical: 48}} />
+            </View>
+          ) : isError ? (
+            <>
+              <Text style={styles.adviceHeader}> Something went wrong!</Text>
+              <Text style={styles.advice}>
+                Try checking your internet connection.
+              </Text>
+            </>
+          ) : (
             <>
               <Text style={styles.adviceHeader}>
                 Advice #{currentAdvice?.id}
@@ -81,7 +107,6 @@ function App() {
         <PatternDivider style={{marginBottom: 50}} />
         <FetchRandomAdviceButton
           onPress={() => {
-            console.log('Pressed!');
             getAdvice();
           }}
         />
