@@ -36,6 +36,7 @@ function FetchRandomAdviceButton({ onPress }: FetchRandomAdviceButtonProps) {
           ? { ...styles.diceIcon, ...styles.diceIconActive }
           : { ...styles.diceIcon }
       }
+      role="button"
     >
       <DiceIcon />
     </Pressable>
@@ -82,18 +83,21 @@ export default function App() {
             justifyContent: "center",
             opacity: currentAdvice && isLoading ? 0.5 : 1,
           }}
+          role="main"
         >
           {!currentAdvice && isLoading ? (
             <View>
-              <Text style={styles.adviceHeader}>Loading...</Text>
+              <Text style={styles.adviceHeader} role="heading">
+                Loading...
+              </Text>
               <ActivityIndicator size={64} style={{ marginVertical: 48 }} />
             </View>
           ) : (
             <>
-              <Text style={styles.adviceHeader}>
+              <Text style={styles.adviceHeader} role="heading">
                 {isError
                   ? "Something went wrong!"
-                  : `Advice ${currentAdvice?.id}`}
+                  : `Advice #${currentAdvice?.id}`}
               </Text>
               <Text style={styles.advice}>
                 {isError
