@@ -36,7 +36,6 @@ function FetchRandomAdviceButton({ onPress }: FetchRandomAdviceButtonProps) {
           ? { ...styles.diceIcon, ...styles.diceIconActive }
           : { ...styles.diceIcon }
       }
-      role="button"
     >
       <DiceIcon />
     </Pressable>
