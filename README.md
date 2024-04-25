@@ -14,4 +14,10 @@ In **development**.
 
 ## Screenshot
 
+### Android
+
 ![Screenshot of the advice-generator app](./screenshots/app-screenshot.jpeg)
+
+### Web
+
+![Screenshot of the web version](./screenshots/web-screenshot.png)
