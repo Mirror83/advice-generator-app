@@ -10,7 +10,7 @@ It is primarily intended as a project to learn the basics of React Native and th
 
 ## Status
 
-In **development**.
+**Archived**.
 
 ## Screenshot
 
